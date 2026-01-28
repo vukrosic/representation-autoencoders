@@ -13,19 +13,20 @@ def train():
 
     # 2. Hyperparameters
     image_size = 224
-    batch_size = 16
+    batch_size = 32 # Increased batch size for real data
     lr = 1e-4
     epochs = 10
-    data_path = "./data" # User should specify their data path
 
     # 3. Model Initialization (Simple DINOv2-based RAE)
-    # Note: These paths and configs should match what's available or desired.
-    # Default parameters for RAE use facebook/dinov2-base and vit_mae-base.
+    # Using decoder_patch_size=14 to reconstruct 224x224 from 16x16=256 patches.
+    # DINOv2-base (224) produces 16x16 patches. 16 * 14 = 224.
     model = RAE(
         encoder_cls='Dinov2withNorm',
         encoder_config_path='facebook/dinov2-base',
+        encoder_params={'dinov2_path': 'facebook/dinov2-base'},
         decoder_config_path='facebook/vit-mae-base',
-        noise_tau=0.0 # No noise for simple reconstruction training
+        decoder_patch_size=14,
+        noise_tau=0.0 
     ).to(device)
     
     # Freeze encoder, train decoder
@@ -34,17 +35,14 @@ def train():
         param.requires_grad = False
     model.decoder.train()
 
-    # 4. Data Loading
+    # 4. Data Loading - Using CIFAR-10 as real data
     transform = transforms.Compose([
         transforms.Resize((image_size, image_size)),
         transforms.ToTensor(),
     ])
     
-    if not os.path.exists(data_path):
-        print(f"Directory {data_path} not found. Please create it and add 'train' folder with class subdirectories.")
-        return
-
-    dataset = datasets.ImageFolder(root=data_path, transform=transform)
+    print("Loading real dataset (CIFAR-10)...")
+    dataset = datasets.CIFAR10(root="./data", train=True, download=True, transform=transform)
     dataloader = DataLoader(dataset, batch_size=batch_size, shuffle=True, num_workers=4)
 
     # 5. Optimizer & Loss

@@ -1,0 +1,27 @@
+# Data and Checkpoints
+data/
+*.pt
+*.pth
+*.tar.gz
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.coverage
+.venv/
+env/
+venv/
+ENV/
+
+# Output and Visualization
+reconstruction_results.png
+results/
+outputs/
+
+# IDEs and OS
+.vscode/
+.idea/
+.DS_Store
+.ipynb_checkpoints/
