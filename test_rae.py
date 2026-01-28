@@ -9,8 +9,8 @@ def test_and_visualize():
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     
     # 1. Load Model
-    # We use the checkpoint from epoch 1
-    checkpoint_path = "rae_simple_epoch_1.pt"
+    # We use the checkpoint from epoch 6
+    checkpoint_path = "rae_simple_epoch_6.pt"
     if not os.path.exists(checkpoint_path):
         print(f"Checkpoint {checkpoint_path} not found. Please wait for at least one epoch to finish.")
         return
